@@ -1,0 +1,8 @@
+/* QLEX.RUN — 404: the signal is lost mid-run. */
+.hero .sub::before { background: var(--rust); }
+.hero .sub { color: var(--rust); }
+#lost { position: absolute; z-index: 2; font-family: var(--font-mono); font-size: 11px; letter-spacing: .18em; color: var(--rust); white-space: nowrap; opacity: 0; transition: opacity .3s; pointer-events: none; }
+#lost.show { opacity: 1; }
+#lost::before { content: '—— '; }
+.err { font-family: var(--font-mono); font-size: 12px; letter-spacing: .12em; color: var(--ink-2); border: 1px dashed var(--ink); padding: 10px 14px; display: inline-block; margin: 0 0 32px; }
+main { min-height: 20vh; }

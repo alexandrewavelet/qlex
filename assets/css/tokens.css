@@ -1,0 +1,65 @@
+/* QLEX.RUN — design tokens and base. The palette was sampled from the reference mousepad
+   (cream, navy, teal, sand, orange, rust) plus a mustard accent. See docs/direction-artistique.md §3. */
+:root {
+  --paper: #EDE7D3;
+  --paper-2: #E3DCC5;
+  --ink: #1E2841;
+  --ink-2: #2B3A5C;
+  --teal: #2F7F8C;
+  --sand: #D6A072;
+  --orange: #DF7434;
+  --rust: #A8462F;
+  --mustard: #D5A62A;
+  --dark: #202322;
+
+  --font-display: 'Space Grotesk', 'Archivo', sans-serif;
+  --font-text: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  /* reference stripe: navy 100 · teal 13 · sand 35 · orange 41 · rust 18, gaps 3 */
+  --s-navy: 100; --s-teal: 13; --s-sand: 35; --s-orange: 41; --s-rust: 18; --s-gap: 3;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; background: var(--paper); scroll-padding-top: 80px; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font-text); font-size: 17px; line-height: 1.5; overflow-x: hidden; position: relative; }
+a { color: inherit; }
+img, svg, canvas { display: block; max-width: 100%; }
+button { font: inherit; color: inherit; }
+
+/* Everything clickable shows a hand. */
+a[href], button, [role="button"], label, summary, .card, .ledger .row:not(.h) { cursor: pointer; }
+a.none, [aria-disabled="true"] { cursor: default; }
+
+.wrap { width: min(1180px, 100% - 48px); margin-inline: auto; }
+.mono { font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; }
+kbd { font: 500 11px/1 var(--font-mono); border: 1px solid currentColor; padding: 2px 5px; border-radius: 2px; }
+
+/* Very light paper grain: felt, not seen. */
+.grain::after {
+  content: ''; position: fixed; inset: 0; z-index: 9990; pointer-events: none;
+  opacity: .055; mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* The reference stripe as flex bands (vertical by default, .h for horizontal) */
+.qstripe { display: flex; gap: calc(var(--s-gap) * var(--u, 1px)); }
+.qstripe > i { display: block; flex: 0 0 auto; }
+.qstripe > i:nth-child(1) { background: var(--ink);    width: calc(var(--s-navy)   * var(--u, 1px)); }
+.qstripe > i:nth-child(2) { background: var(--teal);   width: calc(var(--s-teal)   * var(--u, 1px)); }
+.qstripe > i:nth-child(3) { background: var(--sand);   width: calc(var(--s-sand)   * var(--u, 1px)); }
+.qstripe > i:nth-child(4) { background: var(--orange); width: calc(var(--s-orange) * var(--u, 1px)); }
+.qstripe > i:nth-child(5) { background: var(--rust);   width: calc(var(--s-rust)   * var(--u, 1px)); }
+.qstripe.h { flex-direction: column; }
+.qstripe.h > i { width: auto !important; }
+.qstripe.h > i:nth-child(1) { height: calc(var(--s-navy)   * var(--u, 1px)); }
+.qstripe.h > i:nth-child(2) { height: calc(var(--s-teal)   * var(--u, 1px)); }
+.qstripe.h > i:nth-child(3) { height: calc(var(--s-sand)   * var(--u, 1px)); }
+.qstripe.h > i:nth-child(4) { height: calc(var(--s-orange) * var(--u, 1px)); }
+.qstripe.h > i:nth-child(5) { height: calc(var(--s-rust)   * var(--u, 1px)); }
+
+/* ?static (screenshots) and reduced motion: no motion at all */
+html.static *, html.static *::before, html.static *::after { animation: none !important; transition: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}

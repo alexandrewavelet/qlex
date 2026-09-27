@@ -1,0 +1,23 @@
+/* QLEX veil: a curtain of stripes sweeps left→right over the old page and out to the right on the new one.
+   Loaded in <head> before transition.js. Band count, colours, widths and tempi are drawn at random by
+   transition.js for each transition (inline --from/--to/duration); the same spec is replayed on the next page, in phase. */
+#qlex-veil { position: fixed; inset: 0; z-index: 99999; display: flex; pointer-events: none; will-change: transform; transform: translateX(-100%); visibility: visible !important; }
+#qlex-veil .fcp { position: absolute; left: 0; top: 0; }
+#qlex-veil i { display: block; flex: var(--from, 20) 1 0; height: 100%; animation: qv 1s ease-in-out infinite alternate; }
+@keyframes qv { from { flex-grow: var(--from, 20); } to { flex-grow: var(--to, 20); } }
+
+#qlex-veil.in   { animation: qv-in  500ms cubic-bezier(.65,0,.35,1) forwards; }
+#qlex-veil.hold { transform: translateX(0); }
+#qlex-veil.out  { animation: qv-out 550ms cubic-bezier(.65,0,.35,1) forwards; }
+@keyframes qv-in  { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+@keyframes qv-out { from { transform: translateX(0); }     to { transform: translateX(100%); } }
+
+/* Arriving through a transition: the veil is created in <head>, so it covers the viewport before the body paints. */
+html.veil-hold { background: #1E2841; }
+html.veil-hold body { visibility: hidden; }
+html.veil-hold.veil-ready body { visibility: visible; }
+
+/* Debug: ?veil-debug freezes the veil mid-sweep for screenshots */
+#qlex-veil.debug { transform: translateX(-40%); animation: none; }
+
+@media (prefers-reduced-motion: reduce) { #qlex-veil { display: none !important; } html.veil-hold body { visibility: visible; } }
