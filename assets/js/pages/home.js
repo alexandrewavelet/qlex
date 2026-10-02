@@ -33,7 +33,7 @@
 
   /* ---- 2.0 field notes ---- */
   $('#notes-list').innerHTML = D.notes.map(n => `
-    <a class="row" id="note-${n.n}" href="#" data-nav data-sec="notes">
+    <a class="row" id="note-${n.n}" href="note.html?n=${n.n}" data-nav data-sec="notes">
       <span class="n">${n.n}</span><span class="d">${D.fmtDate(n.date, 'dots')}</span>
       <span class="t">${n.title}</span><span class="c" data-c="${n.cat}">${n.cat}</span><span class="m">${n.mins} MIN</span>
     </a>`).join('');

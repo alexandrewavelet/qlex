@@ -1,0 +1,105 @@
+<p>I still write code in Sublime Text. On Omarchy it opens one window per project, takes the colours of whatever theme the desktop is wearing, and has no menu bar. This is the configuration, file by file, and the small Python that holds it together.</p>
+
+<h2>Still Sublime, in 2026</h2>
+<p>The argument has not changed in fifteen years: it starts before the finger leaves the key, and a 1 MB generated Laravel class does not make it think. The rest of the argument is about windows. On Omarchy every work project is an entry in the launcher menu, and that entry runs <code>subl --project &lt;service&gt;.sublime-project</code>. One project, one window, one sidebar, one terminal. A script generates the project files, adding a build system per tool it finds in the folder (<code>composer install</code>, <code>php artisan test</code>, <code>vendor/bin/phpstan</code>), all targeting Terminus rather than the native build panel, so the output is coloured and can be cancelled.</p>
+<p>That workflow needs one setting most people never touch:</p>
+<pre class="code"><code>"hot_exit": "disabled",</code></pre>
+<p>Hot exit resurrects your last session at startup. With it on, opening a project from the menu also reopened the last project I had closed, next to it, every time. Off, Sublime starts with exactly the window the menu asked for. The price is that unsaved scratch buffers die with the process. I have learned to save them.</p>
+<p>Two more lines in <code>Preferences.sublime-settings</code> are Omarchy-specific. The font is named explicitly, <code>JetBrainsMono Nerd Font</code> at 12, because it is already the system font (<code>omarchy font current</code>) and naming it beats letting fontconfig resolve <code>monospace</code> on its own. And <code>update_check</code> is false, because the AUR package <code>sublime-text-4</code> cannot be updated by the built-in updater. The setting is ignored on an unregistered copy, so the dialog shows up anyway. It showed up while I was taking the screenshots for this note.</p>
+
+<figure class="cap"><div class="box"><img src="assets/media/notes/028/editor.png" alt="Sublime Text on the Retro 82 Omarchy theme: a dark navy editor with cream text and orange accents, the project sidebar on the left, no menu bar."></div><figcaption>FIG. 2 — The editor on the Retro 82 theme. Sidebar, tabs and status bar come from the generated Omarchy.sublime-theme, the syntax colours from Omarchy.sublime-color-scheme.</figcaption></figure>
+
+<h2>A theme that follows the desktop</h2>
+<p>An Omarchy theme is a folder with a <code>colors.toml</code>: a flat list of semantic keys (<code>bg</code>, <code>fg</code>, <code>accent</code>, <code>muted</code>, <code>red</code>, <code>green</code>, <code>orange</code>, <code>cyan</code>…). When you run <code>omarchy theme set</code>, Omarchy renders every template it finds in <code>~/.config/omarchy/themed/</code> with those values, then runs the scripts in <code>hooks/theme-set.d/</code>. Alacritty, btop and Neovim get that for free. Sublime does not, so I wrote two templates and a hook.</p>
+<p><code>sublime.sublime-color-scheme.tpl</code> is the syntax side: background, caret, selection at <code>{{ accent }}60</code> (Sublime reads <code>#rrggbbaa</code> as is), gutter, diff colours, and a dozen rules mapping scopes to palette keys. <code>sublime.sublime-theme.tpl</code> is the chrome: sidebar, tab bar, status bar, command palette, autocomplete, all expressed as <code>om_*</code> variables on top of <code>Default.sublime-theme</code>. The hook copies the rendered results into <code>Packages/User</code> under a fixed name:</p>
+<pre class="code"><code>cp "$THEME_DIR/sublime.sublime-color-scheme" "$SUBLIME_USER/Omarchy.sublime-color-scheme"
+
+tint=white
+[[ $(omarchy-theme-color --file "$THEME_DIR/colors.toml" mode) == light ]] &amp;&amp; tint=black
+sed "s|\"base_tint\": \"white\"|\"base_tint\": \"$tint\"|" \
+  "$THEME_DIR/sublime.sublime-theme" &gt;"$SUBLIME_USER/Omarchy.sublime-theme"</code></pre>
+<p>The preferences point at <code>Omarchy.sublime-theme</code> and <code>Omarchy.sublime-color-scheme</code> and never change. Sublime watches its package folder, so the editor recolours itself about a second after the terminal does. No restart, no command, nothing to click.</p>
+<aside class="note"><p>Sublime reloads any file under <code>Packages/User</code> the moment it changes on disk. That is why none of this needs a plugin on the Sublime side: the hook writes two files, and that is the end of its responsibilities.</p></aside>
+<p>The <code>base_tint</code> line is the part I would not have guessed. The Default theme derives most of its shades by tinting a base colour towards <code>base_tint</code>. White is right for a dark theme. On a light theme it washes everything out, so the hook asks Omarchy which mode the theme is in and flips it to black.</p>
+<p>The tab bar was the other trap. Sublime classifies a window as dark, medium-dark, medium or light from the luminosity of the colour scheme, and picks the matching <code>tabset_*_bg</code> variable. Retro 82 lands on medium-dark. Set only <code>tabset_dark_bg</code> and the bar falls back to the Default computation, the background lightened towards white, which is how I got a grey slate on top of a navy editor for a day. The template now sets all four. The active tab gets an accent rule along its top edge (<code>layer2.tint</code>), the same orange as Hyprland's active border.</p>
+<p>Before the templates there was a Python script, <code>sublime-theme-from-omarchy</code>, that reads a theme's <code>colors.toml</code> and, when the theme ships a <code>vscode-theme.json</code>, converts its <code>tokenColors</code> into Sublime rules: scope arrays joined with commas, <code>fontStyle</code> filtered down to what Sublime understands (bold, italic, underline, glow; no strikethrough). It also sets <code>line_highlight</code> to the muted colour at 18 % opacity, because <code>editor.lineHighlightBackground</code> in most Omarchy themes equals the editor background and the current line would be invisible. The templates replaced it for the daily case; the script stays for one-off schemes, and the Retro 82 pair it produced is still in the repo.</p>
+
+<h2>No menu bar</h2>
+<p>Sublime stores the menu bar's visibility in the session, per window. Since every project opens a fresh window, that memory is useless: the new window gets the default, which is visible. So a plugin of a dozen lines hides it on <code>on_new_window_async</code>, and again 200 ms after <code>plugin_loaded</code> for the window that already exists at startup, which the event never fires for.</p>
+<pre class="code"><code>def _hide(window):
+    if window is not None and window.is_valid():
+        window.set_menu_visible(False)
+
+class HideMenuOnNewWindow(sublime_plugin.EventListener):
+    def on_new_window_async(self, window):
+        _hide(window)
+
+def plugin_loaded():
+    sublime.set_timeout(lambda: [_hide(w) for w in sublime.windows()], 200)</code></pre>
+<p><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>M</kbd> is bound to <code>toggle_menu</code> for the rare day I need it, and pressing <kbd>Alt</kbd> on its own shows the bar for the length of one navigation, which Sublime does by itself.</p>
+
+<h2>Terminus, and a prompt for everything else</h2>
+<p><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>T</kbd> toggles a Terminus panel in the project folder (<code>"cwd": "${folder}"</code>, with <code>hide_active</code> so the same key closes it). The build systems handle the fixed commands. What was missing was the one-off: an artisan command I type once, a script I run and forget. That is <code>run_in_project</code>, a window command of forty lines.</p>
+
+<figure class="cap"><div class="box"><img src="assets/media/notes/028/plugin.png" alt="The run_command_prompt.py plugin open in Sublime Text, Python syntax on the Retro 82 colours, with a red marker on the import sublime_plugin line."></div><figcaption>FIG. 3 — run_command_prompt.py, open in the editor it extends. Pyright underlines import sublime_plugin: the module only exists inside Sublime.</figcaption></figure>
+
+<p>It opens an input panel, and on <kbd>Enter</kbd> hands the text to Terminus:</p>
+<pre class="code"><code>def on_done(self, text):
+    command = (self.prefix + " " + text).strip()
+    self.window.run_command("terminus_open", {
+        "shell_cmd": command,
+        "cwd": _project_dir(self.window),
+        "title": command[:40],
+        "panel_name": "Terminus",
+        "show_in_panel": True,
+        "cancellable": True,
+        "timeit": True,
+    })</code></pre>
+<p><code>shell_cmd</code> rather than <code>cmd</code>, so quotes and pipes go through unparsed. <code>timeit</code> prints the duration at the end, <code>cancellable</code> means <kbd>Ctrl</kbd>+<kbd>C</kbd> works. The <code>prefix</code> argument makes variants cheap: <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>R</kbd> is the bare <code>$</code> prompt, <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>A</kbd> is the same command with <code>php artisan</code> prepended. The artisan variant's <code>is_enabled</code> checks that a file named <code>artisan</code> exists at the project root, so on a static site like this one the palette entry is simply greyed out.</p>
+
+<figure class="cap"><div class="box"><img src="assets/media/notes/028/terminus.png" alt="Two strips from the bottom of the Sublime window: the bare dollar prompt of run_in_project, then the Terminus panel showing the output of git log."></div><figcaption>FIG. 4 — Ctrl+Alt+R. Above, the bare prompt at the foot of the window; below, the Terminus panel after a git log on this site's repo.</figcaption></figure>
+
+<h2>PHP formatted on save, with the project's own formatter</h2>
+<p>Work projects do not agree on a formatter. Some run Pint, some run phpcs, and each carries its own rules in <code>pint.json</code> or <code>phpcs.xml</code>. I did not want a global formatter with a global config fighting those files, so the save hook finds the tool the project installed:</p>
+<pre class="code"><code>TOOLS = (
+    ("pint", lambda path: [path]),
+    ("phpcbf", lambda path: ["-q", path]),
+)
+
+def _find_tool(file_path):
+    directory = os.path.dirname(file_path)
+    while True:
+        for name, args in TOOLS:
+            binary = os.path.join(directory, "vendor", "bin", name)
+            if os.access(binary, os.X_OK):
+                return directory, [binary] + args(file_path)
+        parent = os.path.dirname(directory)
+        if parent == directory:
+            return None, None
+        directory = parent</code></pre>
+<p>It walks up from the saved file to the first <code>vendor/bin</code> that contains either, Pint first when a project has both, and runs it with the project directory as working directory so the config file applies. No <code>vendor/</code> yet, nothing happens. The listener is <code>on_post_save_async</code>, so the save itself is never slowed. The one wrinkle: <code>phpcbf</code> exits with 1 when it fixed something, which is the normal case, so only return codes above 1 count as a failure. When the tool has rewritten the file, Sublime would reload it on the next focus; the plugin calls <code>revert</code> right away so the buffer matches the disk before I look at it. A project can opt out with <code>"php_format_on_save": false</code> in its settings.</p>
+
+<h2>Language servers and the rest</h2>
+<p>The package list is 25 entries long. The ones that matter:</p>
+<table class="spec">
+<tr><th>PHP</th><td>LSP-intelephense, with <code>phpVersion</code> pinned to 8.3.0: the containers run 8.3, the host CLI runs 8.5, and without the pin it suggests syntax the app cannot execute. <code>files.maxSize</code> raised to 5 MB for Laravel's generated classes. Undefined-symbol diagnostics on, which only works with <code>vendor/</code> installed on the host.</td></tr>
+<tr><th>Vue, TS</th><td>Vue, LSP-volar, LSP-typescript, LSP-eslint, LSP-tailwindcss.</td></tr>
+<tr><th>Python</th><td>LSP-pyright and LSP-ruff. Pyright flags <code>import sublime_plugin</code> in the plugins above, since that module only exists inside Sublime. I live with the red dot.</td></tr>
+<tr><th>Data</th><td>LSP-json, LSP-yaml, DotENV, Dockerfile Syntax Highlighting, EditorConfig.</td></tr>
+<tr><th>Git</th><td>GitGutter in the gutter, GitSavvy for staging and blame without leaving the window.</td></tr>
+<tr><th>Templates, docs</th><td>Laravel Blade, MarkdownEditing.</td></tr>
+<tr><th>Chrome</th><td>Terminus, SideBarEnhancements, SublimeLinter, A File Icon. Vintage is in <code>ignored_packages</code>. ayu and SynthWave 84 are installed as fallbacks, commented out in the preferences, for the day an Omarchy theme turns out unreadable in an editor.</td></tr>
+</table>
+
+<h2>Every file is a symlink</h2>
+<p>Nothing in <code>Packages/User</code> is a real file. Each one is a symbolic link into a private git repo that holds the whole desktop: Hyprland, the menu, the hooks, the templates, the package lists. Editing a keymap in Sublime edits the repo. <code>omarchy-setup status</code> says what changed, <code>omarchy-setup sync</code> commits and pushes, <code>omarchy-setup add</code> adopts a new file. The generated <code>Omarchy.*</code> pair and Package Control's <code>.bak</code> files are deliberately not tracked: they are output, not source. Some tools write a file by replacing it rather than editing it, which silently breaks the link; <code>status</code> notices, <code>sync</code> re-adopts the new version. The repo deserves a note of its own; this one is about the editor.</p>
+
+<h2>What is missing</h2>
+<ul>
+<li>The update dialog. An unregistered copy ignores <code>update_check</code>, and I do not have a workaround short of a licence, which is probably the point.</li>
+<li>A theme without <code>colors.toml</code> never reaches the templates. The hook exits early and Sublime keeps the previous theme's colours while everything else changes. Rare, and confusing when it happens.</li>
+<li>The save hook runs the whole formatter on every save, which on a phpcs project is a visible second. A debounce, or a diff check before the <code>revert</code>, would help.</li>
+<li>Blade has syntax highlighting but no language server. Intelephense does not see into templates.</li>
+<li><code>Markdown.sublime-settings</code> is an empty pair of braces. It has been for a month.</li>
+<li>The project files and the menu entries assume my work layout. The idea travels, the script does not.</li>
+</ul>

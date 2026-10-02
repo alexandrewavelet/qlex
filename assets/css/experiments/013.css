@@ -1,0 +1,19 @@
+/* Experiment 013 — Komorebi Palette: the matcher bench. */
+#matcher .q { display: flex; align-items: baseline; gap: 10px; border-bottom: 1.5px solid var(--ink); margin-bottom: 10px; }
+#matcher .q .kw { font: 600 15px var(--font-mono); color: var(--orange); }
+#matcher .q input { border-bottom: 0; }
+#matcher .q:focus-within { border-bottom-color: var(--orange); }
+#matcher ol { list-style: none; margin: 0; padding: 0; }
+#matcher li { display: grid; grid-template-columns: 1fr auto; grid-template-areas: "t s" "d s" "h h"; gap: 1px 14px; padding: 8px 0; border-bottom: 1px dashed rgba(30,40,65,.4); min-height: 44px; }
+#matcher li:last-child { border-bottom: 0; }
+#matcher li .t { grid-area: t; font-family: var(--font-display); font-weight: 700; font-size: 16px; }
+#matcher li .d { grid-area: d; font-size: 13px; color: var(--ink-2); }
+#matcher li .s { grid-area: s; font-family: var(--font-mono); font-size: 13px; color: var(--rust); font-variant-numeric: tabular-nums; align-self: center; min-width: 34px; text-align: right; }
+#matcher li .h { grid-area: h; display: flex; flex-wrap: wrap; gap: 4px 12px; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .06em; color: var(--ink-2); margin-top: 3px; }
+#matcher li .h i { font-style: normal; }
+#matcher li .h b { font-weight: 500; color: var(--ink); }
+#matcher li .h em { font-style: normal; color: var(--teal); text-transform: uppercase; letter-spacing: .1em; margin-left: 4px; }
+#matcher li:first-child .t { color: var(--orange); }
+#matcher li.more { display: block; font-family: var(--font-mono); font-size: 11px; letter-spacing: .12em; color: var(--rust); min-height: 0; }
+#matcher .bar .chip { padding: 5px 7px; text-transform: none; letter-spacing: .04em; margin-right: 4px; }
+@media (max-width: 860px) { #matcher .bar .sp { display: none; } #matcher .bar { gap: 6px; } }

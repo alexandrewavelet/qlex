@@ -1,5 +1,7 @@
-/* QLEX.RUN — site content. Experiments and notes are still placeholders; the operator block is real
- */
+/* QLEX.RUN — site content. Experiments 013–015 and note 028 are real; the rest of the experiments and notes are still
+   placeholders. The operator block is real; docs/operator-cv.md has the sources and the points still to confirm.
+   An entry with `page: true` has its own content: assets/js/experiments/NNN.js (+ assets/css/experiments/NNN.css) for an
+   experiment, assets/notes/NNN.html for a note. `links` are the hero buttons (first one is primary), `reg` adds rows to the register. */
 window.QLEX = {
   site: {
     name: 'QLEX',
@@ -23,14 +25,21 @@ window.QLEX = {
     cta2: 'READ NOTES',
   },
   experiments: [
-    { n: '014', name: 'Draw Six', desc: 'A small tool for studying opening hands in Altered.', status: 'ACTIVE', type: 'Web application', stack: ['Laravel', 'Inertia', 'Vue', 'D3'], year: 2026 },
-    { n: '013', name: 'Mana Machine', desc: 'A pocket calculator for mana curves that nobody asked for.', status: 'ACTIVE', type: 'Tool', stack: ['Vue', 'TypeScript'], year: 2026 },
-    { n: '012', name: 'Tiny Orbit', desc: 'A 2 kB gravity toy. Click to add a planet, watch it go wrong.', status: 'DORMANT', type: 'Game', stack: ['Canvas', 'JavaScript'], year: 2025 },
+    { n: '015', name: 'Tiling Bench', desc: 'A window manager with no windows to manage. Omarchy\'s keys, paper instead of pixels.', status: 'ACTIVE', type: 'Interactive demo', stack: ['HTML', 'CSS', 'JavaScript'], year: 2026, page: true,
+      links: [{ label: 'OPEN THE BENCH', href: 'lab/tiling/', noVeil: true }, { label: 'SOURCE', href: 'https://github.com/alexandrewavelet/qlex/tree/main/lab/tiling' }],
+      reg: [['Runs', 'In the browser'], ['Licence', 'MIT']] },
+    { n: '014', name: 'Komorebi Workspaces', desc: 'komorebi workspaces drawn inside the Windows 11 taskbar itself. No second bar, no lost pixels.', status: 'ACTIVE', type: 'Windhawk mod', stack: ['C++', 'WinRT', 'XAML'], year: 2026, page: true,
+      links: [{ label: 'SOURCE', href: 'https://github.com/alexandrewavelet/windhawk-komorebi-workspaces' }, { label: 'MOD FILE', href: 'https://github.com/alexandrewavelet/windhawk-komorebi-workspaces/blob/main/komorebi-workspaces.wh.cpp' }],
+      reg: [['Version', '1.0'], ['Licence', 'MIT'], ['Runs in', 'explorer.exe']] },
+    { n: '013', name: 'Komorebi Palette', desc: 'A command palette for komorebi, inside Flow Launcher. Type k, then what you want.', status: 'ACTIVE', type: 'Flow Launcher plugin', stack: ['Python'], year: 2026, page: true,
+      links: [{ label: 'SOURCE', href: 'https://github.com/alexandrewavelet/Flow.Launcher.Plugin.KomorebiPalette' }, { label: 'LATEST RELEASE', href: 'https://github.com/alexandrewavelet/Flow.Launcher.Plugin.KomorebiPalette/releases/latest' }],
+      reg: [['Version', '1.0.0'], ['Licence', 'MIT'], ['Keyword', 'k']] },
     { n: '011', name: 'Stripe Generator', desc: 'Generates 1970s stripe patterns from a seed. Used on this very site.', status: 'STABLE', type: 'CSS experiment', stack: ['CSS', 'SVG'], year: 2025 },
     { n: '010', name: 'Deck Lab', desc: 'Deck-building sandbox with probability tables and bad advice.', status: 'ARCHIVED', type: 'Web application', stack: ['Laravel', 'Vue'], year: 2024 },
     { n: '009', name: 'Clockwork', desc: 'A cron expression explainer that talks back.', status: 'STABLE', type: 'Tool', stack: ['PHP'], year: 2024 },
   ],
   notes: [
+    { n: '028', date: '2026-10-02', title: 'Sublime Text, the Omarchy way', cat: 'CODE', mins: 8, page: true, lead: 'One editor, one theme hook, zero menu bar.' },
     { n: '027', date: '2026-09-26', title: 'Why I keep rebuilding the same stupid side project', cat: 'THOUGHTS', mins: 6 },
     { n: '026', date: '2026-09-18', title: 'Things I learned running Laravel queues at scale', cat: 'CODE', mins: 9 },
     { n: '025', date: '2026-09-04', title: 'A completely unnecessary experiment with PixiJS filters', cat: 'DESIGN', mins: 4 },
@@ -77,7 +86,7 @@ window.QLEX = {
   footer: {
     line: 'PERSONAL COMPUTING / EXPERIMENTAL SOFTWARE',
     links: [
-      { label: 'GITHUB', href: '#' },
+      { label: 'GITHUB', href: 'https://github.com/alexandrewavelet' },
       { label: 'EMAIL', href: '#' },
       { label: 'RSS', href: '#' },
     ],

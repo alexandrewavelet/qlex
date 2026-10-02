@@ -1,0 +1,7 @@
+/* Experiment 015 — Tiling Bench: the embedded bench and the tree plate. */
+figure.cap .lab-box { padding: 0; }
+.lab-box iframe { display: block; width: 100%; aspect-ratio: 4 / 3; min-height: 420px; border: 0; background: var(--paper); }
+figure.cap figcaption a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--orange); text-underline-offset: 3px; }
+figure.cap figcaption a:hover { color: var(--orange); }
+.tree-box svg { display: block; width: 100%; height: auto; }
+@media (max-width: 860px) { .lab-box iframe { aspect-ratio: auto; height: 640px; } }

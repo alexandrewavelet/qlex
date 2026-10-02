@@ -1,0 +1,158 @@
+/* QLEX LAB — tiling bench. A simulated Hyprland desktop drawn as 1977 lab equipment:
+   paper, ink rules, hard shadows, mono capitals. Colours come from ../../assets/css/tokens.css only. */
+
+html, body { height: 100%; }
+body { display: flex; flex-direction: column; min-height: 100%; overflow: hidden auto; }
+.mono { font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; }
+:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }
+
+/* Full-page chrome: a thin lab header and a figure caption. Hidden in ?embed. */
+header.lab { flex: 0 0 auto; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 16px; height: 52px; padding: 0 24px; border-bottom: 1.5px solid var(--ink); font-family: var(--font-mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; }
+header.lab a { text-decoration: none; justify-self: start; }
+header.lab a:hover { color: var(--orange); }
+header.lab .t { font-weight: 600; letter-spacing: .2em; }
+header.lab .t b { color: var(--orange); font-weight: 600; }
+header.lab .hint { justify-self: end; color: var(--ink-2); font-size: 11px; display: flex; gap: 14px; }
+header.lab .hint button { border: 0; background: none; padding: 0; font: inherit; color: inherit; letter-spacing: inherit; text-transform: inherit; }
+header.lab .hint button:hover kbd { background: var(--ink); color: var(--paper); }
+
+main.bench { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; width: min(1180px, 100% - 48px); margin: 0 auto; padding: 20px 0 16px; }
+.rig { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; border: 1.5px solid var(--ink); background: var(--paper); }
+figcaption.fig { flex: 0 0 auto; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: 10px; font-family: var(--font-mono); font-size: 11px; letter-spacing: .14em; color: var(--rust); text-transform: uppercase; }
+figcaption.fig span:last-child { color: var(--ink-2); }
+
+/* Top bar, the omarchy bar reduced to its bones */
+.bar { flex: 0 0 auto; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 16px; height: 30px; padding: 0 10px 0 6px; border-bottom: 1.5px solid var(--ink); font-family: var(--font-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }
+.bar.off { display: none; }
+.bar .ws { display: flex; gap: 2px; }
+.bar .ws button { width: 24px; height: 22px; border: 1px solid transparent; background: none; padding: 0; font: 500 11px var(--font-mono); color: var(--ink-2); display: grid; place-items: center; position: relative; }
+.bar .ws button.occ { color: var(--ink); border-color: var(--ink); }
+.bar .ws button.cur { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.bar .ws button:hover:not(.cur) { border-color: var(--orange); color: var(--orange); }
+.bar .title { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; text-align: center; }
+.bar .title b { font-weight: 500; color: var(--orange); }
+.bar .right { display: flex; gap: 14px; white-space: nowrap; }
+.bar .right .lay { color: var(--rust); }
+.bar .right .lay::before { content: 'LAYOUT '; color: var(--ink-2); }
+
+/* The desk. Windows are absolutely positioned inside; the seeded stripe shows through the gaps. */
+.desk { flex: 1 1 auto; position: relative; min-height: 340px; overflow: hidden; background-color: var(--paper); background-image: repeating-linear-gradient(transparent 0 23px, rgba(30,40,65,.07) 23px 24px); }
+.wall { position: absolute; top: 0; bottom: 0; left: 9%; display: flex; gap: 2px; pointer-events: none; }
+.wall i { display: block; height: 100%; }
+.wall .lbl { position: absolute; left: 100%; margin-left: 8px; bottom: 14px; transform: rotate(-90deg); transform-origin: left bottom; white-space: nowrap; font-family: var(--font-mono); font-size: 10px; letter-spacing: .2em; color: var(--rust); }
+.desk .empty { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--font-mono); font-size: 11px; letter-spacing: .18em; color: var(--ink-2); text-transform: uppercase; pointer-events: none; text-align: center; line-height: 2; }
+.desk .empty kbd { color: var(--ink); }
+
+/* Windows: white cards with a 2 px border (Hyprland border_size 2, rounding 0). Focus = orange. */
+.win { position: absolute; display: flex; flex-direction: column; background: #fff; border: 2px solid var(--ink); overflow: hidden; z-index: 2; transition: left .2s cubic-bezier(.2,.7,.2,1), top .2s cubic-bezier(.2,.7,.2,1), width .2s cubic-bezier(.2,.7,.2,1), height .2s cubic-bezier(.2,.7,.2,1); }
+.win[hidden] { display: none; }
+.win.snap { transition: none; }
+.win.focus { border-color: var(--orange); z-index: 4; }
+.win.float { z-index: 6; box-shadow: 3px 3px 0 var(--ink); }
+.win.float.focus { z-index: 7; box-shadow: 3px 3px 0 var(--orange); }
+.win.full { z-index: 8; }
+.win .tb { flex: 0 0 24px; display: flex; align-items: center; gap: 10px; padding: 0 2px 0 8px; border-bottom: 1px solid var(--ink); background: var(--paper-2); font: 500 10.5px/1 var(--font-mono); letter-spacing: .12em; text-transform: uppercase; white-space: nowrap; overflow: hidden; }
+.win.focus .tb { background: var(--ink); color: var(--paper); border-bottom-color: var(--ink); }
+.win .tb .app { font-weight: 600; }
+.win.focus .tb .app { color: var(--sand); }
+.win .tb .ttl { overflow: hidden; text-overflow: ellipsis; min-width: 0; flex: 1 1 auto; }
+.win .tb .no { color: var(--rust); }
+.win.focus .tb .no { color: var(--orange); }
+.win .tb .tag { border: 1px solid currentColor; padding: 1px 4px; font-size: 9px; letter-spacing: .14em; }
+.win .tb .x { width: 22px; height: 20px; border: 0; background: none; padding: 0; font: 500 13px/1 var(--font-mono); display: grid; place-items: center; color: inherit; }
+.win .tb .x:hover { background: var(--orange); color: var(--ink); }
+.win .body { flex: 1 1 auto; min-height: 0; overflow: hidden; padding: 10px 12px; font-family: var(--font-mono); font-size: 11px; line-height: 1.7; letter-spacing: .02em; color: var(--ink); }
+.win .body .ln { display: block; height: 8px; background: var(--paper-2); margin: 6px 0; }
+.win .body .ln.i { background: var(--ink); opacity: .85; } .win .body .ln.t { background: var(--teal); } .win .body .ln.o { background: var(--orange); } .win .body .ln.r { background: var(--rust); } .win .body .ln.s { background: var(--sand); }
+
+/* App bodies */
+.body.term { background: var(--paper); font-size: 11.5px; }
+.body.term .p { color: var(--teal); font-weight: 500; }
+.body.term .out { color: var(--ink-2); }
+.body.term .cur { display: inline-block; width: 7px; height: 13px; background: var(--ink); vertical-align: -2px; animation: cursor 1.1s steps(1) infinite; }
+@keyframes cursor { 50% { opacity: 0; } }
+.body.browser { padding: 0; display: flex; flex-direction: column; }
+.body.browser .url { flex: 0 0 auto; display: flex; gap: 8px; align-items: center; white-space: nowrap; overflow: hidden; padding: 6px 10px; border-bottom: 1px solid var(--ink); background: var(--paper); letter-spacing: .1em; text-transform: uppercase; font-size: 10px; }
+.body.browser .url b { font-weight: 500; color: var(--rust); }
+.body.browser .page { padding: 10px 12px; }
+.body.browser .page h4 { margin: 0 0 6px; font-family: var(--font-display); font-weight: 700; font-size: 20px; letter-spacing: -.02em; line-height: 1; }
+.body.browser .page .sub { font-size: 9.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--ink-2); margin-bottom: 8px; }
+.body.browser .page .sub::before { content: ''; display: inline-block; width: 18px; height: 2px; background: var(--orange); vertical-align: middle; margin-right: 8px; }
+.body.browser .page svg { margin: 8px 0; border: 1px solid var(--ink); }
+.body.editor { padding: 8px 0; display: grid; grid-template-columns: 30px 1fr; column-gap: 10px; font-size: 10.5px; line-height: 18px; }
+.body.editor .g { text-align: right; color: var(--ink-2); padding-right: 8px; border-right: 1px solid var(--paper-2); }
+.body.editor .c { display: flex; gap: 5px; align-items: center; padding-right: 10px; }
+.body.editor .c .ln { height: 7px; margin: 0; }
+.body.notes { background: #fff; background-image: repeating-linear-gradient(transparent 0 19px, rgba(30,40,65,.18) 19px 20px); background-position: 0 6px; font-family: var(--font-text); font-size: 12.5px; line-height: 20px; letter-spacing: 0; }
+.body.notes h5 { margin: 0; font: 600 10px var(--font-mono); letter-spacing: .2em; text-transform: uppercase; color: var(--rust); line-height: 20px; }
+.body.notes p { margin: 0; }
+.body.music .trk { display: grid; grid-template-columns: 24px 1fr auto; gap: 10px; padding: 1px 0; letter-spacing: .06em; text-transform: uppercase; }
+.body.music .trk b { color: var(--rust); font-weight: 500; }
+.body.music .trk.on { color: var(--orange); font-weight: 500; }
+.body.music .prog { height: 6px; border: 1px solid var(--ink); margin: 8px 0 6px; display: flex; gap: 1px; padding: 1px; }
+.body.music .prog i { flex: 1; background: var(--paper-2); } .body.music .prog i.on { background: var(--orange); }
+.body.files .row { display: grid; grid-template-columns: 16px 1fr auto; gap: 10px; }
+.body.files .row b { color: var(--teal); font-weight: 500; }
+
+/* Key display: a lit chord in the lower middle of the desk */
+.hud { position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%); display: flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; pointer-events: none; z-index: 20; max-width: calc(100% - 24px); white-space: nowrap; }
+.hud .chord { border: 1.5px solid var(--ink); background: var(--paper); padding: 6px 10px; transition: background .1s, color .1s; font-weight: 500; }
+.hud.lit .chord { background: var(--ink); color: var(--paper); }
+.hud .act { color: var(--rust); background: var(--paper); padding: 3px 6px; overflow: hidden; text-overflow: ellipsis; }
+
+/* Control strip: the same actions as the keys, for mouse and touch */
+.ctl { flex: 0 0 auto; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 8px 10px; border-top: 1.5px solid var(--ink); background: var(--paper); }
+.ctl .sep { width: 1px; height: 22px; background: var(--ink); margin: 0 4px; opacity: .5; }
+.k { font: 500 11px var(--font-mono); letter-spacing: .1em; text-transform: uppercase; border: 1.5px solid var(--ink); background: var(--paper); color: var(--ink); padding: 6px 9px; transition: transform .12s, box-shadow .12s; white-space: nowrap; }
+.k:hover { transform: translate(-2px, -2px); box-shadow: 3px 3px 0 var(--orange); }
+.k[aria-pressed="true"], .k.held { background: var(--ink); color: var(--paper); }
+.k.run { margin-left: auto; border-color: var(--orange); color: var(--rust); }
+.k.run.on { background: var(--orange); color: var(--ink); border-color: var(--orange); }
+.k.help { width: 30px; text-align: center; padding-inline: 0; }
+.ctl .mod { color: var(--ink-2); font: 10px var(--font-mono); letter-spacing: .1em; text-transform: uppercase; margin-left: 2px; }
+
+/* Help overlay, same recipe as the site's key sheet */
+.overlay { position: fixed; inset: 0; background: rgba(30,40,65,.55); display: none; place-items: center; z-index: 9998; padding: 16px; }
+.overlay.open { display: grid; }
+.overlay .box { width: min(760px, 100%); max-height: calc(100% - 16px); overflow: auto; background: var(--paper); border: 2px solid var(--ink); box-shadow: 8px 8px 0 var(--orange); padding: 22px 26px; font-family: var(--font-mono); font-size: 12px; }
+.overlay h3 { margin: 0 0 6px; font-family: var(--font-display); font-size: 22px; letter-spacing: .04em; display: flex; align-items: baseline; gap: 12px; }
+.overlay h3 small { font-family: var(--font-mono); font-size: 11px; letter-spacing: .16em; color: var(--rust); font-weight: 400; }
+.overlay p.note { margin: 0 0 8px; font-size: 11.5px; line-height: 1.6; letter-spacing: .02em; }
+.overlay p.note b { color: var(--rust); font-weight: 500; }
+.overlay .cols { columns: 2; column-gap: 32px; }
+.overlay h4 { margin: 14px 0 4px; font-size: 10.5px; letter-spacing: .2em; color: var(--rust); font-weight: 500; border-bottom: 1px dashed var(--ink); break-after: avoid; }
+.overlay .keys { display: grid; grid-template-columns: auto 1fr; gap: 5px 14px; align-items: center; break-inside: avoid; }
+.overlay .keys div:nth-child(odd) { display: flex; gap: 3px; white-space: nowrap; }
+.overlay .keys div:nth-child(even) { font-size: 11px; letter-spacing: .04em; }
+.overlay kbd { min-width: 20px; text-align: center; }
+.overlay .esc { margin-top: 16px; font-size: 11px; color: var(--ink-2); }
+
+/* Embed: nothing but the rig, filling the iframe */
+html.embed header.lab, html.embed figcaption.fig { display: none; }
+html.embed main.bench { width: 100%; padding: 0; }
+html.embed body { overflow: hidden; }
+html.embed .rig { border: 0; }
+html.embed .desk { min-height: 0; }
+
+@media (max-width: 860px) {
+  header.lab { grid-template-columns: 1fr auto; height: auto; padding: 10px 16px; row-gap: 4px; }
+  header.lab .t { grid-column: 1 / -1; order: -1; }
+  header.lab .hint { display: none; }
+  main.bench { width: 100%; padding: 0; }
+  .rig { border-inline: 0; }
+  figcaption.fig { padding: 0 16px; }
+}
+@media (max-width: 600px) {
+  .bar .right .lay { display: none; }
+  .win .tb .no, .win .tb .tag { display: none; }
+  .win .body { padding: 8px; font-size: 10px; }
+  .body.browser .page h4 { font-size: 16px; }
+  .k { font-size: 10px; padding: 5px 7px; }
+  .ctl { gap: 4px; padding: 6px 8px; }
+  .ctl .sep { display: none; }
+  .ctl .mod { display: none; }
+  .hud { font-size: 10px; gap: 6px; }
+  .wall { left: 6%; }
+  .overlay .cols { columns: 1; }
+  .overlay .box { padding: 16px 18px; }
+}

@@ -1,0 +1,14 @@
+/* QLEX.RUN — field note page: the hero is the note's header card, the body is the note (notebook.css). Accent: teal. */
+#note { --acc: var(--teal); --acc-ink: var(--paper); }
+.hero h1 { font-size: clamp(40px, 5.6vw, 76px); letter-spacing: -.03em; line-height: .95; max-width: 16ch; }
+.hero .no { font-family: var(--font-mono); font-size: 12px; letter-spacing: .12em; color: var(--teal); margin: 0 0 16px; display: flex; align-items: center; gap: 14px; }
+.hero .no .chip { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .14em; font-weight: 600; padding: 2px 7px; border: 1.5px solid currentColor; }
+.chip[data-c="CODE"] { color: var(--teal); } .chip[data-c="DESIGN"] { color: var(--orange); } .chip[data-c="GAMES"] { color: var(--rust); } .chip[data-c="THOUGHTS"] { color: var(--ink); } .chip[data-c="MISC"] { color: var(--sand); }
+.hero .sub::before { background: var(--teal); }
+.hero .readtime { margin: 0; letter-spacing: .14em; color: var(--rust); display: flex; gap: 18px; flex-wrap: wrap; }
+.hero .readtime b { font-weight: 500; color: var(--ink); }
+#notes .sec-head small, #note .sec-head small { color: var(--acc); }
+article .body h2::before, article .body h3, aside.side h3, aside.side .toc li a:hover, aside.side .toc li a.on, .pn a:hover b { color: var(--teal); }
+article .body a { text-decoration-color: var(--teal); }
+article .body a:hover { color: var(--teal); }
+.body .pending { font-family: var(--font-mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--rust); border: 1px dashed var(--rust); padding: 14px 16px; }

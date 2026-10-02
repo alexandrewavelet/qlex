@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<title>QLEX LAB · TILING BENCH</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="A Hyprland dwindle layout simulated on paper, driven by Omarchy's key bindings.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="tiling.css">
+<script>
+  /* Mode flags before first paint: ?static kills motion, ?embed strips the chrome. */
+  (function () { const q = location.search; const h = document.documentElement; if (/static/.test(q)) h.classList.add('static'); if (/(^\?|[?&])embed/.test(q)) h.classList.add('embed'); window.QLEX = window.QLEX || {}; })();
+</script>
+</head>
+<body class="grain">
+
+<header class="lab" id="lab-head">
+  <a href="../../experiment.html?n=015">← Back to experiment</a>
+  <div class="t">QLEX LAB <b>·</b> TILING BENCH</div>
+  <div class="hint"><span>ALT = SUPER</span><button id="hint-keys" type="button" title="Keyboard shortcuts"><kbd>?</kbd> keys</button></div>
+</header>
+
+<main class="bench" id="bench">
+  <div class="rig" role="application" aria-label="Tiling window manager bench">
+    <div class="bar" id="bar">
+      <div class="ws" id="ws" role="group" aria-label="Workspaces"></div>
+      <div class="title" id="bar-title" aria-live="polite"></div>
+      <div class="right"><span class="lay" id="bar-layout">DWINDLE</span><span id="clock">00:00</span></div>
+    </div>
+    <div class="desk" id="desk">
+      <div class="wall" id="wall" aria-hidden="true"></div>
+      <div class="empty" id="empty" aria-hidden="true"></div>
+      <div class="hud" id="hud" aria-live="polite"><span class="chord" id="hud-chord">STANDBY</span><span class="act" id="hud-act">PRESS A CHORD OR RUN THE SEQUENCE</span></div>
+    </div>
+    <div class="ctl" id="ctl">
+      <button class="k" id="latch" type="button" aria-pressed="false" aria-label="Hold the SUPER modifier">[ SUPER ]</button>
+      <span class="mod">or hold ALT</span>
+      <span class="sep"></span>
+      <button class="k" type="button" data-chord="SUPER + RETURN" aria-label="Open a terminal">Terminal</button>
+      <button class="k" type="button" data-chord="SUPER + SHIFT + RETURN" aria-label="Open a browser">Browser</button>
+      <button class="k" type="button" data-chord="SUPER + SHIFT + N" aria-label="Open the editor">Editor</button>
+      <span class="sep"></span>
+      <button class="k" type="button" data-chord="SUPER + W" aria-label="Close the focused window">Close</button>
+      <button class="k" type="button" data-chord="SUPER + J" aria-label="Toggle the split orientation">Split</button>
+      <button class="k" type="button" data-chord="SUPER + T" aria-label="Toggle floating">Float</button>
+      <button class="k" type="button" data-chord="SUPER + F" aria-label="Toggle full screen">Full</button>
+      <button class="k" type="button" data-chord="SUPER + L" aria-label="Toggle the workspace layout">Layout</button>
+      <button class="k" type="button" data-chord="SUPER + SHIFT + TAB" data-send="1" aria-label="Send the focused window to the next workspace">Send →</button>
+      <button class="k run" id="run" type="button" aria-label="Run the scripted sequence">[ RUN SEQUENCE ]</button>
+      <button class="k help" id="help-btn" type="button" aria-label="Keyboard shortcuts">?</button>
+    </div>
+  </div>
+  <figcaption class="fig"><span>FIG. 2 — TILING BENCH · DWINDLE LAYOUT · GAPS 5 / 10 · BORDER 2 PX</span><span>ALT STANDS IN FOR SUPER · PRESS ? FOR THE KEY LIST</span></figcaption>
+</main>
+
+<div class="overlay" id="help" role="dialog" aria-modal="true" aria-label="Keyboard shortcuts" hidden>
+  <div class="box">
+    <h3>KEYBOARD <small>OMARCHY BINDINGS, REPRODUCED</small></h3>
+    <p class="note"><b>SUPER</b> belongs to your operating system while a browser is open, so the bench reads <b>ALT</b> as SUPER. You can also latch the <b>[ SUPER ]</b> button on screen and press the plain keys. Some chords (ALT+TAB, ALT+digits in a few browsers) are still taken by the OS or the browser; the buttons below the desk do the same job.</p>
+    <div class="cols">
+      <h4>Applications</h4>
+      <div class="keys">
+        <div><kbd>SUPER</kbd><kbd>↵</kbd></div><div>Terminal</div>
+        <div><kbd>SUPER</kbd><kbd>⇧</kbd><kbd>↵</kbd></div><div>Browser (also <kbd>SUPER</kbd> <kbd>⇧</kbd> <kbd>B</kbd>)</div>
+        <div><kbd>SUPER</kbd><kbd>⇧</kbd><kbd>N</kbd></div><div>Editor</div>
+        <div><kbd>SUPER</kbd><kbd>⇧</kbd><kbd>O</kbd></div><div>Notes</div>
+        <div><kbd>SUPER</kbd><kbd>⇧</kbd><kbd>M</kbd></div><div>Music</div>
+        <div><kbd>SUPER</kbd><kbd>⇧</kbd><kbd>F</kbd></div><div>File manager</div>
+      </div>
+      <h4>Windows</h4>
+      <div class="keys">
+        <div><kbd>SUPER</kbd><kbd>W</kbd></div><div>Close window</div>
+        <div><kbd>SUPER</kbd><kbd>J</kbd></div><div>Toggle split orientation</div>
+        <div><kbd>SUPER</kbd><kbd>T</kbd></div><div>Toggle floating</div>
+        <div><kbd>SUPER</kbd><kbd>F</kbd></div><div>Full screen</div>
+        <div><kbd>SUPER</kbd><kbd>ALT</kbd><kbd>F</kbd></div><div>Full width (maximized, keeps gaps; needs the latch)</div>
+        <div><kbd>SUPER</kbd><kbd>P</kbd></div><div>Pseudo-tile</div>
+        <div><kbd>SUPER</kbd><kbd>-</kbd><kbd>=</kbd></div><div>Shrink / expand</div>
+        <div><kbd>SUPER</kbd><kbd>L</kbd></div><div>Workspace layout: dwindle / scrolling</div>
+      </div>
+      <h4>Focus and swap</h4>
+      <div class="keys">
+        <div><kbd>SUPER</kbd><kbd>←</kbd><kbd>↑</kbd><kbd>→</kbd><kbd>↓</kbd></div><div>Move focus</div>
+        <div><kbd>SUPER</kbd><kbd>⇧</kbd><kbd>←</kbd><kbd>↑</kbd><kbd>→</kbd><kbd>↓</kbd></div><div>Swap windows</div>
+      </div>
+      <h4>Workspaces</h4>
+      <div class="keys">
+        <div><kbd>SUPER</kbd><kbd>1</kbd>…<kbd>5</kbd></div><div>Switch to workspace</div>
+        <div><kbd>SUPER</kbd><kbd>⇧</kbd><kbd>1</kbd>…<kbd>5</kbd></div><div>Move window to workspace</div>
+        <div><kbd>SUPER</kbd><kbd>⇥</kbd></div><div>Next workspace (<kbd>⇧</kbd> for previous)</div>
+      </div>
+      <h4>Bench</h4>
+      <div class="keys">
+        <div><kbd>SUPER</kbd><kbd>⇧</kbd><kbd>⌫</kbd></div><div>Toggle gaps</div>
+        <div><kbd>SUPER</kbd><kbd>⇧</kbd><kbd>␣</kbd></div><div>Toggle the top bar</div>
+        <div><kbd>?</kbd></div><div>This sheet</div>
+        <div><kbd>esc</kbd></div><div>Close, release the latch, stop the sequence</div>
+      </div>
+    </div>
+    <div class="esc"><kbd>esc</kbd> close</div>
+  </div>
+</div>
+
+<script src="../../assets/js/identity.js"></script>
+<script src="tiling.js"></script>
+</body>
+</html>

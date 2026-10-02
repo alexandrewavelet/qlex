@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-<title>QLEX.RUN — Experiment</title>
+<title>QLEX.RUN — Field note</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="assets/css/transition.css">
 <script src="assets/js/transition.js"></script>
 <link rel="stylesheet" href="assets/css/notebook.css">
-<link rel="stylesheet" href="assets/css/experiment.css">
+<link rel="stylesheet" href="assets/css/note.css">
 <link rel="stylesheet" href="assets/css/print.css">
 </head>
 <body class="grain">
@@ -37,30 +37,29 @@
     <div class="hero" id="top">
       <div class="col-stripe" aria-hidden="true"></div>
       <div id="hero-text">
-        <p class="no"><span id="h-no"></span><span class="status" id="h-status"></span></p>
+        <p class="no"><span id="h-no"></span><span class="chip" id="h-cat"></span></p>
         <h1 id="h-title"></h1>
         <p class="sub" id="h-sub"></p>
         <p class="lead" id="h-lead"></p>
-        <div class="btns" id="hero-btns"></div>
+        <p class="readtime mono" id="h-read"></p>
       </div>
     </div>
   </div>
 </div>
 
 <main>
-  <section id="notes" class="wrap">
-    <div class="sec-head"><span class="num">1.0</span><h2>Notes <small id="h-meta"></small></h2><a class="more" href="index.html#experiments">← All experiments</a></div>
+  <section id="note" class="wrap">
+    <div class="sec-head"><span class="num">1.0</span><h2>Field note <small id="h-meta"></small></h2><a class="more" href="index.html#notes">← All field notes</a></div>
     <article>
       <div class="body" id="body"></div>
       <aside class="side">
         <h3>Register</h3>
-        <figure style="margin:0"><div class="pat-box" id="pat"></div><figcaption id="pat-cap"></figcaption></figure>
         <div class="reg" id="reg"></div>
         <ol class="toc" id="toc" aria-label="Contents"></ol>
       </aside>
     </article>
     <div class="endmark"><span class="qmark" id="end-q"></span><span id="end-label"></span></div>
-    <nav class="pn" id="pn" aria-label="Previous / next experiment"></nav>
+    <nav class="pn" id="pn" aria-label="Previous / next note"></nav>
   </section>
 </main>
 
@@ -94,14 +93,14 @@
 
 <div class="overlay" id="ov-keys" role="dialog" aria-label="Keyboard shortcuts">
   <div class="box">
-    <h3>KEYBOARD <small>EXPERIMENT PAGE</small></h3>
+    <h3>KEYBOARD <small>FIELD NOTE</small></h3>
     <div class="keys">
-      <div><kbd>←</kbd><kbd>→</kbd></div><div>Previous / next experiment</div>
+      <div><kbd>←</kbd><kbd>→</kbd></div><div>Previous / next note</div>
       <div><kbd>i</kbd><kbd>/</kbd></div><div>Open the index</div>
       <div><kbd>esc</kbd></div><div>Close, or back to the index page</div>
     </div>
   </div>
 </div>
-<script src="assets/js/pages/experiment.js"></script>
+<script src="assets/js/pages/note.js"></script>
 </body>
 </html>

@@ -24,7 +24,7 @@
 .status[data-s="STABLE"] { color: var(--ink); }
 .status[data-s="DORMANT"] { color: var(--orange); }
 .status[data-s="ARCHIVED"] { color: var(--rust); }
-.card h3 { font-family: var(--font-display); font-weight: 700; font-size: 26px; letter-spacing: -.01em; margin: 0 0 4px; line-height: 1.1; padding-right: 88px; }
+.card h3 { font-family: var(--font-display); font-weight: 700; font-size: 26px; letter-spacing: -.01em; margin: 0 0 4px; line-height: 1.1; padding-right: 88px; min-height: 2.2em; /* two lines reserved: the pattern sits at the same height on every card */ }
 .card p { margin: 0; font-size: 15px; color: var(--ink-2); flex: 1; line-height: 1.45; }
 .reg { margin: 6px 0 0; font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; border-top: 1px solid var(--ink); }
 .reg > div { display: grid; grid-template-columns: 62px 1fr; gap: 12px; padding: 4px 0; border-bottom: 1px dashed rgba(30,40,65,.4); align-items: center; }
@@ -78,6 +78,7 @@
 @media (max-width: 860px) {
   .grid { grid-template-columns: 1fr; }
   .card { border-right: 0; min-height: 0; }
+  .card h3 { min-height: 0; }
   .card:not(:last-child) { border-bottom: 1px solid var(--ink) !important; }
   .ledger .row { grid-template-columns: 60px 1fr auto; }
   .ledger .n, .ledger .m { display: none; }

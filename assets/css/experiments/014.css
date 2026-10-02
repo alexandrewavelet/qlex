@@ -1,0 +1,26 @@
+/* Experiment 014 — Komorebi Workspaces: the taskbar replica and the data-path plate. */
+#tb-bench .tb { display: grid; grid-template-columns: minmax(0, max-content) auto 1fr; align-items: center; height: 52px; background: var(--ink); color: var(--paper); padding: 0 10px; gap: 12px; }
+#tb-bench .strip { display: flex; gap: 6px; align-items: center; min-width: 0; overflow-x: auto; scrollbar-width: none; outline: none; height: 100%; padding: 0 2px; }
+#tb-bench .strip::-webkit-scrollbar { display: none; }
+#tb-bench .strip:focus-visible { box-shadow: inset 0 0 0 1.5px var(--sand); }
+#tb-bench .ws { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 8px; border: 0; border-bottom: 2px solid transparent; background: rgba(237,231,211,.12); color: var(--paper); font: 500 13px var(--font-mono); letter-spacing: .04em; cursor: pointer; white-space: nowrap; transition: background .12s; flex: 0 0 auto; }
+#tb-bench .ws:hover { background: rgba(237,231,211,.25); }
+#tb-bench .ws.on { background: rgba(223,116,52,.3); border-bottom-color: var(--orange); color: var(--sand); }
+#tb-bench .ws .n { font-weight: 600; margin-right: 2px; }
+#tb-bench .ic { display: inline-grid; place-items: center; width: 20px; height: 20px; font: 700 10px/1 var(--font-mono); letter-spacing: 0; font-style: normal; cursor: pointer; }
+#tb-bench .ic:hover { outline: 1.5px solid var(--paper); outline-offset: 1px; }
+#tb-bench .more { font: 500 11px var(--font-mono); font-style: normal; color: var(--sand); padding-left: 2px; }
+#tb-bench .pinned { display: flex; gap: 10px; margin-left: 8px; }
+#tb-bench .pinned i { display: block; width: 22px; height: 22px; border: 1.5px solid rgba(237,231,211,.35); }
+#tb-bench .tray { justify-self: end; font-size: 12px; letter-spacing: .1em; color: var(--sand); font-variant-numeric: tabular-nums; }
+#tb-bench .log { list-style: none; margin: 0; padding: 8px 12px; min-height: 68px; border-top: 1px solid var(--ink); font-size: 11px; letter-spacing: .08em; line-height: 1.6; text-transform: none; }
+#tb-bench .log li { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#tb-bench .log li:first-child { color: var(--ink); } #tb-bench .log li:not(:first-child) { color: var(--ink-2); opacity: .75; }
+#tb-bench .log b { display: inline-block; width: 18px; font-weight: 600; }
+#tb-bench .log b.in { color: var(--orange); } #tb-bench .log b.out { color: var(--teal); }
+.pipe-box svg { display: block; width: 100%; height: auto; }
+@media (max-width: 860px) {
+  #tb-bench .tb { grid-template-columns: minmax(0, 1fr) auto; }
+  #tb-bench .pinned { display: none; }
+  #tb-bench .bar .sp { display: none; }
+}

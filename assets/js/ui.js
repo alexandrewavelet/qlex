@@ -52,7 +52,7 @@
     const fc = $('#f-copy'); if (fc) fc.textContent = D.footer.copy;
     const ovs = $('#ov-sections'); if (ovs) ovs.innerHTML = opts.sections.map(s => `<li><a href="${link(s.id)}"><span>${s.n}</span><span>${s.label.toUpperCase()}</span></a></li>`).join('');
     const ove = $('#ov-exp'); if (ove) ove.innerHTML = D.experiments.map(e => `<li><a href="${home ? `experiment.html?n=${e.n}` : `#exp-${e.n}`}"><span>${e.n}</span><span>${e.name}</span></a></li>`).join('');
-    const ovn = $('#ov-notes'); if (ovn) ovn.innerHTML = D.notes.map(n => `<li><a href="${link('note-' + n.n)}"><span>${n.n}</span><span>${n.title}</span></a></li>`).join('');
+    const ovn = $('#ov-notes'); if (ovn) ovn.innerHTML = D.notes.map(n => `<li><a href="${home ? `note.html?n=${n.n}` : `#note-${n.n}`}"><span>${n.n}</span><span>${n.title}</span></a></li>`).join('');
 
     /* sticky header state */
     const header = $('#site-header');
